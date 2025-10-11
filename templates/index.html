@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% end %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- 欢迎卡片 -->
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h1 class="card-title display-4 text-primary">{{ title }}</h1>
+                <p class="card-text lead">{{ message }}</p>
+                <p class="text-muted">当前时间: {{ current_time }}</p>
+            </div>
+        </div>
+
+        <!-- 功能展示 -->
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">API测试</h5>
+                        <p class="card-text">测试API接口是否正常工作</p>
+                        <button class="btn btn-outline-primary" onclick="testApi()">测试API</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">实时数据</h5>
+                        <p class="card-text">获取服务器状态信息</p>
+                        <button class="btn btn-outline-success" onclick="getStatus()">获取状态</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API响应区域 -->
+        <div class="mt-4">
+            <h4>API响应</h4>
+            <div id="api-response" class="alert alert-info" style="display: none;">
+                <pre id="response-content"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block extra_js %}
+<script>
+function testApi() {
+    fetch('/api/info')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('response-content').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('api-response').style.display = 'block';
+        })
+        .catch(error => {
+            document.getElementById('response-content').textContent = '错误: ' + error.message;
+            document.getElementById('api-response').style.display = 'block';
+        });
+}
+
+function getStatus() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('response-content').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('api-response').style.display = 'block';
+        })
+        .catch(error => {
+            document.getElementById('response-content').textContent = '错误: ' + error.message;
+            document.getElementById('api-response').style.display = 'block';
+        });
+}
+</script>
+{% end %}
+
