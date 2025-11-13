@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+import asyncio
 
 import tornado.ioloop
 import tornado.web
@@ -11,6 +12,7 @@ from dotenv import load_dotenv
 from .config import settings
 from .routes import get_routes
 from .db import init_mongo, get_db
+from .cache import init_redis, get_redis
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +29,10 @@ class Application(tornado.web.Application):
         # Initialize MongoEngine and expose pymongo db for convenience
         init_mongo()
         self.settings["db"] = get_db()
+        # Initialize Redis client and store reference
+        loop = asyncio.get_event_loop_policy().get_event_loop()
+        loop.run_until_complete(init_redis())
+        self.settings["redis"] = get_redis()
 
 
 def make_app() -> Application:

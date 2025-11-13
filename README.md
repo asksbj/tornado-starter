@@ -11,6 +11,7 @@
 - 📝 模板渲染与静态资源服务  
 - ⚙️ `.env` 环境变量支持  
 - 🧪 API 回显测试接口
+- ⚡ 内置 Redis 异步连接模块
 
 ## 项目结构
 
@@ -134,7 +135,8 @@ def get_routes(static_path: str | None = None) -> list[tuple]:
 ### 模板与静态资源
 
 - 在 `templates/` 目录添加模板文件，并在处理器中调用 `self.render("template.html", **context)`。  
-- 在 `static/` 目录放置 CSS/JS/图片等资源，可通过 `/static/...` 访问。
+- 在 `static/` 目录放置 CSS/JS/图片等资源，可通过 `/static/...` 访问。  
+- Redis 客户端可通过 `self.settings["redis"]` 获取，返回 `redis.asyncio.Redis` 对象，可在异步方法中直接使用 `await redis.get(...)`、`await redis.set(...)`。
 
 ## 配置选项
 
@@ -143,6 +145,9 @@ def get_routes(static_path: str | None = None) -> list[tuple]:
 | `APP_PORT`  | `8888`  | 服务监听端口                 |
 | `APP_DEBUG` | `True`  | Tornado 调试模式             |
 | `SECRET_KEY`| `your-secret-key-change-this` | Cookie 加密密钥（生产必须修改） |
+| `MONGODB_URI` | `mongodb://localhost:27017` | MongoDB 连接串 |
+| `MONGODB_DB`  | `tornado_starter`           | MongoDB 数据库名 |
+| `REDIS_URL`   | `redis://localhost:6379/0`  | Redis 连接串 |
 
 ## 部署建议
 
