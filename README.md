@@ -1,39 +1,45 @@
 # Tornado Web应用
 
-这是一个基于Tornado框架构建的Web应用项目模板，提供了完整的项目结构和基础功能。
+这是一个基于 Tornado 框架构建的 Web 应用模板，提供清晰的目录结构与常用功能配置，可作为学习或生产项目的良好起点。
 
 ## 功能特性
 
-- 🚀 基于Tornado 6.3+的高性能Web服务器
-- 🎨 现代化的Bootstrap 5 UI界面
-- 📱 响应式设计，支持移动端
-- 🔌 RESTful API接口
-- 🛡️ XSRF保护和安全的Cookie处理
-- 📝 模板引擎支持
-- 🎯 静态文件服务
-- ⚙️ 环境变量配置
-- 📊 实时API测试功能
+- 🚀 基于 Tornado 6 的高性能异步 Web 服务器  
+- 🎨 预置 Bootstrap 5 UI，默认支持响应式布局  
+- 🔌 RESTful API 示例与 JSON 工具方法  
+- 🛡️ 启用 XSRF 保护与安全 Cookie  
+- 📝 模板渲染与静态资源服务  
+- ⚙️ `.env` 环境变量支持  
+- 🧪 API 回显测试接口
 
 ## 项目结构
 
 ```
 tornado_starter/
-├── app.py              # 主应用文件
-├── handlers.py         # 请求处理器
-├── settings.py         # 配置文件
-├── run.py             # 启动脚本
-├── requirements.txt    # 依赖包列表
-├── .env.example       # 环境变量示例
-├── templates/         # HTML模板
-│   ├── base.html      # 基础模板
-│   └── index.html     # 首页模板
-├── static/           # 静态文件
+├── tornado_starter/
+│   ├── __init__.py           # 包初始化
+│   ├── __main__.py           # 支持 python -m tornado_starter
+│   ├── app.py                # 应用入口与应用工厂
+│   ├── config.py             # 路径常量与 Tornado settings
+│   ├── routes.py             # 路由集中注册
+│   └── handlers/             # 请求处理器
+│       ├── __init__.py
+│       ├── api.py
+│       ├── base.py
+│       └── main.py
+├── templates/                # HTML 模板
+│   ├── base.html
+│   └── index.html
+├── static/                   # 静态资源
 │   ├── css/
-│   │   └── style.css  # 自定义样式
-│   ├── js/
-│   │   └── main.js    # JavaScript功能
-│   └── images/        # 图片资源
-└── README.md         # 项目说明
+│   ├── images/
+│   └── js/
+├── .env.example              # 环境变量示例
+├── .gitignore
+├── README.md
+├── requirements.txt
+├── run.py                    # 启动脚本（设置默认环境变量）
+└── start.sh                  # 自动化启动脚本
 ```
 
 ## 快速开始
@@ -41,134 +47,123 @@ tornado_starter/
 ### 1. 安装依赖
 
 ```bash
-# 创建虚拟环境（推荐）
+# 创建并激活虚拟环境（推荐）
 python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
+source venv/bin/activate        # macOS / Linux
 # 或
-venv\\Scripts\\activate   # Windows
+venv\Scripts\activate           # Windows
 
-# 安装依赖包
+# 安装依赖
 pip install -r requirements.txt
 ```
 
 ### 2. 配置环境变量
 
 ```bash
-# 复制环境变量模板
 cp .env.example .env
-
-# 编辑.env文件，修改配置
-nano .env
+# 根据需要编辑 .env 中的端口、调试模式、密钥等
 ```
+
+应用会自动尝试加载项目根目录的 `.env` 文件；缺省时使用预设默认值。
 
 ### 3. 启动应用
 
 ```bash
-# 方法1: 直接运行主文件
-python app.py
+# 方法 1：模块方式运行（推荐）
+python -m tornado_starter
 
-# 方法2: 使用启动脚本
+# 方法 2：脚本运行
 python run.py
 
-# 方法3: 使用Tornado命令行
-python -m tornado.autoreload app.py
+# 方法 3：一键脚本（自动创建/激活虚拟环境）
+./start.sh
 ```
 
-### 4. 访问应用
+默认监听地址为 `http://localhost:8888`，可通过 `APP_PORT` 环境变量调整。
 
-打开浏览器访问: http://localhost:8888
+## API 示例
 
-## API接口
+- `GET /api/info`：获取应用信息与版本  
+- `GET /api/status`：返回服务运行状态  
+- `POST /api/echo`：回显请求体 JSON
 
-### 获取应用信息
-```http
-GET /api/info
-```
+`POST /api/echo` 示例：
 
-### 获取服务器状态
-```http
-GET /api/status
-```
-
-### 数据回显测试
 ```http
 POST /api/echo
 Content-Type: application/json
 
 {
-    "message": "Hello Tornado!"
+  "message": "Hello Tornado!"
 }
 ```
 
-## 开发说明
+## 开发指南
 
-### 添加新的处理器
+### 新增处理器
 
-1. 在 `handlers.py` 中创建新的处理器类
-2. 继承 `BaseHandler` 或 `tornado.web.RequestHandler`
-3. 在 `app.py` 中添加路由配置
+1. 在 `tornado_starter/handlers/` 新建模块或类，继承 `BaseHandler` 或 `tornado.web.RequestHandler`。  
+2. 在 `tornado_starter/routes.py` 中注册对应路由。  
 
 ```python
-# handlers.py
-class NewHandler(BaseHandler):
+# tornado_starter/handlers/example.py
+from .base import BaseHandler
+
+
+class ExampleHandler(BaseHandler):
     def get(self):
         self.write_json({"message": "Hello from new handler!"})
 
-# app.py
-handlers = [
-    (r"/new", NewHandler),
-    # ... 其他路由
-]
+
+# tornado_starter/routes.py
+from .handlers import ApiHandler, MainHandler
+from .handlers.example import ExampleHandler
+
+
+def get_routes(static_path: str | None = None) -> list[tuple]:
+    routes = [
+        (r"/", MainHandler),
+        (r"/api/(.*)", ApiHandler),
+        (r"/example", ExampleHandler),
+    ]
+    ...
 ```
 
-### 添加新的模板
+### 模板与静态资源
 
-1. 在 `templates/` 目录下创建HTML文件
-2. 继承 `base.html` 模板
-3. 在处理器中使用 `self.render()` 方法
-
-```python
-def get(self):
-    self.render("new_template.html", data="some data")
-```
-
-### 添加静态资源
-
-将CSS、JS、图片等文件放入 `static/` 对应子目录中，即可通过 `/static/` 路径访问。
+- 在 `templates/` 目录添加模板文件，并在处理器中调用 `self.render("template.html", **context)`。  
+- 在 `static/` 目录放置 CSS/JS/图片等资源，可通过 `/static/...` 访问。
 
 ## 配置选项
 
-通过环境变量可以配置以下选项：
-
-- `APP_PORT`: 应用端口（默认: 8888）
-- `APP_DEBUG`: 调试模式（默认: True）
-- `SECRET_KEY`: Cookie密钥（生产环境必须修改）
+| 变量名       | 默认值  | 说明                         |
+|-------------|---------|------------------------------|
+| `APP_PORT`  | `8888`  | 服务监听端口                 |
+| `APP_DEBUG` | `True`  | Tornado 调试模式             |
+| `SECRET_KEY`| `your-secret-key-change-this` | Cookie 加密密钥（生产必须修改） |
 
 ## 部署建议
 
-### 生产环境部署
+### 生产环境
 
-1. 修改 `.env` 文件中的配置
-2. 设置 `APP_DEBUG=False`
-3. 使用强密钥替换 `SECRET_KEY`
-4. 考虑使用反向代理（如Nginx）
-5. 使用进程管理器（如Supervisor）
+- 创建独立的 `.env`，配置生产环境端口、关闭调试、更新 `SECRET_KEY`。  
+- 建议配合 Nginx/Traefik 等反向代理及 Supervisor/Systemd 等进程管理工具。  
+- 根据需要将静态资源托管至 CDN。  
 
-### Docker部署
-
-可以创建 `Dockerfile` 进行容器化部署：
+### Docker 化
 
 ```dockerfile
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+ENV APP_PORT=8888
 EXPOSE 8888
 
-CMD ["python", "app.py"]
+CMD ["python", "-m", "tornado_starter"]
 ```
 
 ## 许可证
@@ -177,5 +172,5 @@ MIT License
 
 ## 贡献
 
-欢迎提交Issue和Pull Request来改进这个项目模板！
+欢迎通过 Issue 或 Pull Request 提交建议或改进！
 
