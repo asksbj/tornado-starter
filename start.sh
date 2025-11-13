@@ -38,5 +38,5 @@ fi
 
 # 启动应用
 echo "🌟 启动Tornado服务器..."
-python app.py
+python -m tornado_starter
 
