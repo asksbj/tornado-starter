@@ -85,7 +85,9 @@ python run.py
 
 - `GET /api/info`：获取应用信息与版本  
 - `GET /api/status`：返回服务运行状态  
+- `GET /api/users`：获取用户列表（可选 `limit` 参数）  
 - `POST /api/echo`：回显请求体 JSON
+- `POST /api/users`：创建新用户（需要 `name` 与 `email` 字段）
 
 `POST /api/echo` 示例：
 

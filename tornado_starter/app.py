@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from .config import settings
 from .routes import get_routes
+from .db import init_mongo, get_db
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +24,9 @@ class Application(tornado.web.Application):
 
     def __init__(self) -> None:
         super().__init__(get_routes(static_path=settings["static_path"]), **settings)
+        # Initialize MongoEngine and expose pymongo db for convenience
+        init_mongo()
+        self.settings["db"] = get_db()
 
 
 def make_app() -> Application:

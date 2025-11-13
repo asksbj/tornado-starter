@@ -4,13 +4,14 @@ from typing import Iterable
 
 import tornado.web
 
-from .handlers import ApiHandler, MainHandler
+from .handlers import ApiHandler, MainHandler, UserHandler
 
 def get_routes(static_path: str | None = None) -> Iterable[tuple]:
     """Return the list of route specifications for the application."""
 
     routes: list[tuple] = [
         (r"/", MainHandler),
+        (r"/api/users", UserHandler),
         (r"/api/(.*)", ApiHandler),
     ]
 

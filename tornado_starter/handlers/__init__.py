@@ -2,6 +2,7 @@
 
 from .api import ApiHandler
 from .main import MainHandler
+from .users import UserHandler
 
-__all__ = ["ApiHandler", "MainHandler"]
+__all__ = ["ApiHandler", "MainHandler", "UserHandler"]
 
